@@ -2,7 +2,7 @@
 nTeams = 2
 
 # World size (in cells)
-worldWidth, worldHeight = 100, 100
+worldWidth, worldHeight = 160, 90
 
 # Cell parameters
 startingPopulation = 500          # World is initialized with 100 cells
@@ -22,9 +22,9 @@ geneticMask = {'blue':   {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeT
 neighbourLimit = 3  # 8 for no resource competition
 
 # Window
-windowWidth, windowHeight = 800, 800 # Window pixel size
-gridOn = False                       # Show grid
-frameWait = 0.1                      # Time to wait between frames
+windowWidth, windowHeight = 1600, 900 # Window pixel size
+gridOn = False                        # Show grid
+frameWait = 0.1                       # Time to wait between frames
 
 # Colors
 colors = {'blue':      (102, 194, 255),
