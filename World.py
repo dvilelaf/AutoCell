@@ -1,11 +1,6 @@
 from Cell import Cell
 import random
-
-# Colors
-colors = {'blue':   (102, 194, 255),
-          'red':    (255, 102, 102),
-          'green':  (0, 204, 102),
-          'yellow': (255, 255, 179)}
+from Constants import *
 
 
 class World:
@@ -95,7 +90,7 @@ class World:
                     cell.normalizePosition(self.width, self.height)
 
                 elif action == 'mate':
-                    cell.lifePoints = int(0.75 * cell.lifePoints)
+                    cell.lifePoints = int((1 - cellMatingFactor) * cell.lifePoints)
                     self.cells.append(Cell(cell.team, position[0], position[1]))
                     self.set(position[0], position[1], self.cells[-1]) # Keep map synced
 

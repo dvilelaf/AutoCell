@@ -1,10 +1,11 @@
 import random
+from Constants import *
 
 
 class Cell:
 
-    maxAge = 10
-    maxLifePoints = 100
+    maxAge = cellMaxAge
+    maxLifePoints = cellMaxLifePoints
 
     def __init__(self, team, row, col, parents=None):
 
@@ -15,7 +16,7 @@ class Cell:
 
         if not parents:
 
-            self.lifePoints = random.uniform(0.75 * self.maxLifePoints, self.maxLifePoints)
+            self.lifePoints = random.uniform(cellMinStartingLifeFactor * self.maxLifePoints, self.maxLifePoints)
             self.genes = {'wait': 0.0, 'move': 0.0, 'mate': 0.0, 'attack': 0.0, 'changeTeam': 0.0}
 
             weight = 0.0
