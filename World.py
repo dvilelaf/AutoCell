@@ -41,7 +41,6 @@ class World:
 
 
     def step(self):
-
         # Use an independent list to avoid modifying inside a loop
         cellIndexList = list(range(len(self.cells)))
         # Ensure random decision order
@@ -91,7 +90,7 @@ class World:
 
                 elif action == 'mate':
                     cell.lifePoints = int((1 - cellMatingFactor) * cell.lifePoints)
-                    self.cells.append(Cell(cell.team, position[0], position[1]))
+                    self.cells.append(Cell(cell.team, position[0], position[1], parents=(cell, target)))
                     self.set(position[0], position[1], self.cells[-1]) # Keep map synced
 
                 elif action == 'attack':
@@ -101,7 +100,7 @@ class World:
                     target.lifePoints -= lifeDelta
 
                 elif action == 'changeTeam':
-                    cell.team = self.get(position[0], position[1]).team
+                    cell.team = target.team
 
 
         # Clean dead cells
