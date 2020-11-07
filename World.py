@@ -63,7 +63,7 @@ class World:
 
                 emptyNeighbours = 0
                 friendNeighbours = 0
-                foesNeighbours = 0
+                foeNeighbours = 0
                 environment = []
 
                 for rowDelta in [-1, 0, 1]:
@@ -80,8 +80,12 @@ class World:
                                     friendNeighbours += 1
                                     environment.append('friend')
                                 else:
-                                    foesNeighbours += 1
+                                    foeNeighbours += 1
                                     environment.append('foe')
+
+                if (friendNeighbours + foeNeighbours) > neighbourLimit:
+                    cell.lifePoints = 0
+                    continue
 
                 action, targetPositionDelta, spawnPositionDelta = cell.selectAction(environment)
 

@@ -18,6 +18,9 @@ geneticMask = {'blue':   {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeT
                'yellow': {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1},
                'white':  {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1}}
 
+# Resources
+neighbourLimit = 2  # 8 for no resource competition
+
 # Window
 windowWidth, windowHeight = 800, 800 # Window pixel size
 gridOn = False                       # Show grid
