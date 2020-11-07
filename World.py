@@ -27,6 +27,14 @@ class World:
                 self.cells.append(Cell(team, row, col))
                 self.set(row, col, self.cells[-1]) # Map is synced with cells and shares objects
 
+        # Genetic mask normalization
+        for team in geneticMask:
+            weight = 0.0
+            for genWeight in geneticMask[team].values():
+                weight += genWeight
+            for gen in geneticMask[team].keys():
+                geneticMask[team][gen] /= weight
+
 
     def get(self, row, col):
         return self.map[row % self.height][col % self.width]
