@@ -54,4 +54,4 @@ while True:
             pause = not pause
 
     # Sleep
-    time.sleep(0.1)
+    time.sleep(frameWait)

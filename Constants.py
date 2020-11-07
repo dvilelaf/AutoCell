@@ -5,15 +5,23 @@ nTeams = 2
 worldWidth, worldHeight = 100, 100
 
 # Cell parameters
-startingPopulation = 100
-cellMaxAge = 10
-cellMaxLifePoints = 100
-cellMinStartingLifeFactor = 0.75 # A cell is randomly initialized with between 75 and 100 life points
-cellMatingFactor = 0.25 # A cell loses 25% of its life points when mating
+startingPopulation = 100          # World is initialized with 100 cells
+cellMaxAge = 10                   # Cells die at 10 epochs
+cellMaxLifePoints = 100           # Cells have a maximum of 100 life points
+cellMinStartingLifeFactor = 0.75  # A cell is randomly initialized with between 75 and 100 life points
+cellMatingFactor = 0.25           # A cell loses 25% of its life points when mating
+
+# Genetic mask: relative weight of every gen (inclination towards an action)
+geneticMask = {'blue':   {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1},
+               'red':    {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1},
+               'green':  {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1},
+               'yellow': {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1},
+               'white':  {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1}}
 
 # Window
 windowWidth, windowHeight = 800, 800 # Window pixel size
-gridOn = False # Show grid
+gridOn = False                       # Show grid
+frameWait = 0.1                      # Time to wait between frames
 
 # Colors
 colors = {'blue':      (102, 194, 255),
