@@ -48,21 +48,22 @@ class Cell:
 
     def selectAction(self, environment):
         self.age += 1
-        actionSet = ['wait']
+        actionSet = {'wait': 1,
+                     'move': environment.count('empty'),
+                     'mate': environment.count('friend') if environment.count('empty') > 0 else 0, # Mating also needs empty space
+                     'attack': environment.count('foe'),
+                     'changeTeam': environment.count('foe')}
 
-        if 'empty' in environment:
-            actionSet.append('move')
+        # Action normalization
+        actionWeight = 0
+        for action in actionSet:
+            actionWeight += actionSet[action]
+        for action in actionSet:
+            actionSet[action] /= actionWeight
 
-            # Mating also needs empty space
-            if 'friend' in environment:
-                actionSet.append('mate')
-
-        if 'foe' in environment:
-            actionSet.append('attack')
-            actionSet.append('changeTeam')
-
-        weights=[self.genes[action] for action in actionSet]
-        action = random.choices(actionSet, weights=weights, k=1)[0]
+        # Combine genetic weight and environmental weight
+        combinedWeights=[self.genes[action] * actionSet[action] for action in actionSet]
+        action = random.choices(list(actionSet.keys()), weights=combinedWeights, k=1)[0]
 
         targetPositions = []
 
