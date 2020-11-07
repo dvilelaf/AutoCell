@@ -103,7 +103,7 @@ class World:
                 elif action == 'mate':
                     cell.lifePoints = int((1 - cellMatingFactor) * cell.lifePoints)
                     self.cells.append(Cell(cell.team, spawnPosition[0], spawnPosition[1], parents=(cell, target)))
-                    self.set(targetPosition[0], targetPosition[1], self.cells[-1]) # Keep map synced
+                    self.set(spawnPosition[0], spawnPosition[1], self.cells[-1]) # Keep map synced
 
                 elif action == 'attack':
                     lifeDelta = min((target.lifePoints, cell.lifePoints))
