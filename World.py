@@ -54,7 +54,7 @@ class World:
         # Ensure random decision order
         random.shuffle(cellIndexList)
 
-        performedActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0}
+        self.performedActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0}
 
         for cellIndex in cellIndexList:
             cell = self.cells[cellIndex]
@@ -90,7 +90,7 @@ class World:
 
                 spawnPosition = ((cell.row + spawnPositionDelta[0]) % self.height, (cell.col + spawnPositionDelta[1]) % self.width) if spawnPositionDelta else None
 
-                performedActions[action] += 1
+                self.performedActions[action] += 1
 
                 if action == 'wait':
                     pass
@@ -124,6 +124,12 @@ class World:
             self.cells[i] = None # Keep map synced
             del self.cells[i]
 
-        print(f"Epoch {self.epoch}  cells: {len(self.cells)}  waits: {performedActions['wait']}  moves: {performedActions['move']}  mates: {performedActions['mate']}  attacks: {performedActions['attack']}  changeTeams: {performedActions['changeTeam']}")
+        print("Epoch {}  cells: {}  waits: {}  moves: {}  mates: {}  attacks: {}  changeTeams: {}"
+              .format(self.epoch, len(self.cells),
+                      self.performedActions['wait'],
+                      self.performedActions['move'],
+                      self.performedActions['mate'],
+                      self.performedActions['attack'],
+                      self.performedActions['changeTeam']))
 
         self.epoch += 1
