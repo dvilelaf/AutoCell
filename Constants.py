@@ -5,7 +5,7 @@ nTeams = 2
 worldWidth, worldHeight = 100, 100
 
 # Cell parameters
-startingPopulation = 100          # World is initialized with 100 cells
+startingPopulation = 500          # World is initialized with 100 cells
 cellMaxAge = 10                   # Cells die at 10 epochs
 cellMaxLifePoints = 100           # Cells have a maximum of 100 life points
 cellMinStartingLifeFactor = 0.75  # A cell is randomly initialized with between 75 and 100 life points
