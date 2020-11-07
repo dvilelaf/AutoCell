@@ -20,8 +20,8 @@ class World:
                 break
 
         while len(self.cells) < self.population:
-            row = random.randint(0, self.width - 1)
-            col = random.randint(0, self.height - 1)
+            row = random.randint(0, self.height - 1)
+            col = random.randint(0, self.width - 1)
             team = random.choice(self.teams)
             if self.empty(row, col):
                 self.cells.append(Cell(team, row, col))
