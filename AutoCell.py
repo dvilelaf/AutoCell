@@ -45,6 +45,11 @@ while True:
 
         pygame.display.flip()
 
+        # Exit when no alive cells remain
+        if len(world.cells) == 0:
+            pygame.quit()
+            sys.exit()
+
     # Keyboard event check
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
