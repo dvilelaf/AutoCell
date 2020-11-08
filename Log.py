@@ -21,6 +21,8 @@ class Plot:
         self.plotInitialized = False
         self.populationPlots = {team: None for team in world.teams}
         self.axes.set_ylim([0, 1.5 * (world.width * world.height) * (neighbourLimit / 8) / nTeams])
+        self.axes.set_xlabel('Epoch')
+        self.axes.set_ylabel('Population')
 
 
     def update(self, world):
