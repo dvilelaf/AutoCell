@@ -21,18 +21,18 @@ You can change the system parameters at *Constants.py*.
 * A cell has 5 different genes that marks its inclinations towards those actions. Also, every gen has an initial weight that can be changed.
 
 
-## Waiting
+### Waiting
 
 * Waiting is always possible. No action is taken.
 
 
-## Moving
+### Moving
 
 * Movement is only posible if there is a neighbouring empty space.
 * The more empty neighbours are around, the higher the change to move.
 
 
-## Mating
+### Mating
 
 * Mating is only posible if there is a neighbouring empty space for the child cell and another same-team cell to serve as the other parent.
 * Mating only requires one cell to decide mating. It just copies its other-parent neighbour genes.
@@ -41,14 +41,14 @@ You can change the system parameters at *Constants.py*.
 * The more same-team neighbours are around, the higher the change to mate.
 
 
-## Attacking
+### Attacking
 
 * Attacking and changing teams are only posible if there is a different-team neighbour.
 * The more different-team neighbours are around, the higher the change to attack.
 * Attacking a cell means that both cells see their life points decreased until one of them dies.
 
 
-## Changing teams
+### Changing teams
 
 * The more different-team neighbours are around, the higher the change to change team.
 
