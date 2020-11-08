@@ -1,73 +1,131 @@
 from matplotlib import pyplot as plt
 from Constants import *
+from matplotlib.gridspec import GridSpec
 
 
 class Plot:
 
+    genes = ('wait', 'move', 'mate', 'attack', 'changeTeam')
+
     def __init__(self, world):
 
-        self.data = {'performedActions': {'wait': [], 'move': [], 'mate': [], 'attack': [], 'changeTeam': []},
-                     'teams': {}}
-
+        # Init data
+        self.data = {team: {}  for team in world.teams}
         for team in world.teams:
-            self.data['teams'][team] = {'population': [],
-                                        'genAverage': {'wait': [], 'move': [], 'mate': [],
-                                                       'attack': [], 'changeTeam': []}}
-
+            self.data[team] = {'population': [],
+                               'genes': {action: [] for action in self.genes},
+                               'actions': {action: [] for action in self.genes}}
         self.x = []
-        # self.figure, self.axes = plt.subplots(3)
-        self.figure = plt.figure()
-        self.axes = self.figure.add_subplot(111)
+
+        # Figure and grid
         self.plotInitialized = False
-        self.populationPlots = {team: None for team in world.teams}
-        self.axes.set_ylim([0, 1.5 * (world.width * world.height) * (neighbourLimit / 8) / nTeams])
-        self.axes.set_xlabel('Epoch')
-        self.axes.set_ylabel('Population')
+        self.figure = plt.figure(constrained_layout=True)
+        gs = GridSpec(5, 3, figure=self.figure)
+
+        # Init axes
+        self.axes = {'population': self.figure.add_subplot(gs[:, 0]),
+                     'genes': {action: None for action in self.genes},
+                     'actions': {action: None for action in self.genes}}
+        i = 0
+        for gen in self.genes:
+            self.axes['genes'][gen] = self.figure.add_subplot(gs[i, 1])
+            i += 1
+
+        i = 0
+        for gen in self.genes:
+            self.axes['actions'][gen] = self.figure.add_subplot(gs[i, 2])
+            i += 1
+
+        # Plots
+        self.plots = {'population': {team: None for team in world.teams},
+                      'genes': {action: {team: None for team in world.teams} for action in self.genes},
+                      'actions': {action: {team: None for team in world.teams} for action in self.genes}}
+
+        # Set axes labels and limits
+        maxPopulationGuess = 1.5 * (world.width * world.height) * (neighbourLimit / 8) / nTeams
+
+        self.axes['population'].set_ylim([0, maxPopulationGuess])
+        self.axes['population'].set_ylabel('Population')
+
+        for gen in self.axes['genes']:
+            self.axes['genes'][gen].set_ylim([0, 1])
+            self.axes['genes'][gen].set_ylabel(gen)
+
+            self.axes['actions'][gen].set_ylim([0, 1])
+            self.axes['actions'][gen].set_ylabel(gen)
 
 
     def update(self, world):
 
+        # Update data
         self.x.append(world.epoch)
 
-        for action in self.data['performedActions']:
-            self.data['performedActions'][action].append(world.performedActions[action])
+        for team in world.teams:
+            self.data[team]['population'].append(world.populations[team]) # Add populations
 
-        for team in self.data['teams']:
-            self.data['teams'][team]['population'].append(0)
-            for gen in self.data['teams'][team]['genAverage']:
-                self.data['teams'][team]['genAverage'][gen].append(0)
+            for gen in self.genes:
+                self.data[team]['genes'][gen].append(0) # Init gen average
 
         for cell in world.cells:
-            self.data['teams'][cell.team]['population'][-1] += 1
             for gen in cell.genes:
-                self.data['teams'][cell.team]['genAverage'][gen][-1] += cell.genes[gen]
+                self.data[cell.team]['genes'][gen][-1] += cell.genes[gen] # Add gen values
 
-        for team in self.data['teams']:
-            teamPopulation = self.data['teams'][team]['population'][-1]
-            for gen in self.data['teams'][team]['genAverage']:
-                self.data['teams'][team]['genAverage'][gen][-1] /= teamPopulation
+        for team in world.teams:
+            for gen in self.genes:
+                self.data[team]['genes'][gen][-1] /= world.populations[team] # Average genes
+                self.data[team]['actions'][gen].append(world.actions[team][gen] / world.populations[team]) # Actions (averaged)
 
-        # Plot
+        # Plot initialization
         if not self.plotInitialized:
+
             self.plotInitialized = True
+
             for team in world.teams:
+                # Population
                 color = [i / 255 for i in colors[team]]
                 color.append(1) # alpha
-                self.populationPlots[team], = self.axes.plot(self.x, self.data['teams'][team]['population'], color=color)
-            # self.actionPlot = self.axes[1].plot(self.x)
-            # self.genPlot = self.axes[2].plot(self.x)
+                self.plots['population'][team], = self.axes['population'].plot(self.x, self.data[team]['population'], color=color)
 
-            plt.ion()   # interactive mode
+                # Genes and Actions
+                for action in self.genes:
+                    self.plots['genes'][action][team], = self.axes['genes'][action].plot(self.x, self.data[team]['genes'][action], color=color)
+                    self.plots['actions'][action][team], = self.axes['actions'][action].plot(self.x, self.data[team]['actions'][action], color=color)
+
+            # Set interactive mode
+            plt.ion()
             plt.show()
 
+        # Plot
         else:
-            self.axes[0].set_xlim([0, world.epoch])
+            # Population
+            self.axes['population'].set_xlim([0, world.epoch])
 
             for team in world.teams:
-                if self.axes.get_ylim()[1] < self.data['teams'][team]['population'][-1]:
-                    self.axes.set_ylim([0, 1.2 * self.axes.get_ylim()[1]])
+                if self.axes['population'].get_ylim()[1] < self.data[team]['population'][-1]:
+                    self.axes['population'].set_ylim([0, 1.2 * self.axes['population'].get_ylim()[1]])
 
-                self.populationPlots[team].set_xdata(self.x)
-                self.populationPlots[team].set_ydata(self.data['teams'][team]['population'])
+                self.plots['population'][team].set_xdata(self.x)
+                self.plots['population'][team].set_ydata(self.data[team]['population'])
 
+            # Genes and actions
+            for action in self.genes:
+
+                self.axes['genes'][action].set_xlim([0, world.epoch])
+                self.axes['actions'][action].set_xlim([0, world.epoch])
+
+                for team in world.teams:
+
+                    if self.axes['actions'][action].get_ylim()[1] < self.data[team]['actions'][action][-1]:
+                        self.axes['actions'][action].set_ylim([0, 1.2 * self.axes['actions'][action].get_ylim()[1]])
+
+                    self.plots['actions'][action][team].set_xdata(self.x)
+                    self.plots['actions'][action][team].set_ydata(self.data[team]['actions'][action])
+
+                    if self.axes['genes'][action].get_ylim()[1] < self.data[team]['genes'][action][-1]:
+                        self.axes['genes'][action].set_ylim([0, 1.2 * self.axes['genes'][action].get_ylim()[1]])
+
+                    self.plots['genes'][action][team].set_xdata(self.x)
+                    self.plots['genes'][action][team].set_ydata(self.data[team]['genes'][action])
+
+            # Refresh plot
             self.figure.canvas.start_event_loop(0.001) # plt.pause(0.001) steals the focus
