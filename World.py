@@ -31,15 +31,6 @@ class World:
                 self.populations[team] += 1
 
 
-        # Genetic mask normalization
-        for team in geneticMask:
-            weight = 0.0
-            for genWeight in geneticMask[team].values():
-                weight += genWeight
-            for gen in geneticMask[team].keys():
-                geneticMask[team][gen] /= weight
-
-
     def get(self, row, col):
         return self.map[row % self.height][col % self.width]
 
