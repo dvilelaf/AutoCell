@@ -12,7 +12,7 @@ class World:
         self.population = population if population else width
         self.cells = []
         self.teams = []
-        self.epoch = 0
+        self.epoch = -1
 
         for color in colors:
             self.teams.append(color)
