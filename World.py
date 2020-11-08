@@ -5,11 +5,11 @@ from Constants import *
 
 class World:
 
-    def __init__(self, width=25, height=25, population=None, nTeams=2):
+    def __init__(self, width=25, height=25, initialPopulation=None, nTeams=2):
         self.width = width
         self.height = height
         self.map = [[None for _ in range(self.width)] for _ in range(self.height)]
-        self.population = population if population else width
+        self.initialPopulation = initialPopulation if initialPopulation else width
         self.cells = []
         self.teams = []
         self.epoch = -1
@@ -19,13 +19,17 @@ class World:
             if len(self.teams) == nTeams:
                 break
 
-        while len(self.cells) < self.population:
+        self.populations = {team: 0 for team in self.teams}
+
+        while len(self.cells) < self.initialPopulation:
             row = random.randint(0, self.height - 1)
             col = random.randint(0, self.width - 1)
             team = random.choice(self.teams)
             if self.empty(row, col):
                 self.cells.append(Cell(team, row, col))
                 self.set(row, col, self.cells[-1]) # Map is synced with cells and shares objects
+                self.populations[team] += 1
+
 
         # Genetic mask normalization
         for team in geneticMask:
@@ -54,7 +58,7 @@ class World:
         # Ensure random decision order
         random.shuffle(cellIndexList)
 
-        self.performedActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0}
+        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0} for team in self.teams}
 
         for cellIndex in cellIndexList:
             cell = self.cells[cellIndex]
@@ -94,7 +98,7 @@ class World:
 
                 spawnPosition = ((cell.row + spawnPositionDelta[0]) % self.height, (cell.col + spawnPositionDelta[1]) % self.width) if spawnPositionDelta else None
 
-                self.performedActions[action] += 1
+                self.actions[cell.team][action] += 1
 
                 if action == 'wait':
                     pass
@@ -108,6 +112,7 @@ class World:
                     cell.lifePoints = int((1 - cellMatingFactor) * cell.lifePoints)
                     self.cells.append(Cell(cell.team, spawnPosition[0], spawnPosition[1], parents=(cell, target)))
                     self.set(spawnPosition[0], spawnPosition[1], self.cells[-1]) # Keep map synced
+                    self.populations[cell.team] += 1
 
                 elif action == 'attack':
                     lifeDelta = min((target.lifePoints, cell.lifePoints))
@@ -125,16 +130,23 @@ class World:
                 deletionList.append(i)
 
         for i in sorted(deletionList, reverse=True):
+            self.populations[self.cells[i].team] -= 1
             self.cells[i] = None # Keep map synced
             del self.cells[i]
 
-        if logData:
-            print("Epoch {}  cells: {}  waits: {}  moves: {}  mates: {}  attacks: {}  changeTeams: {}"
-                .format(self.epoch, len(self.cells),
-                        self.performedActions['wait'],
-                        self.performedActions['move'],
-                        self.performedActions['mate'],
-                        self.performedActions['attack'],
-                        self.performedActions['changeTeam']))
-
         self.epoch += 1
+
+        if logData:
+
+            totalActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0}
+            for action in totalActions:
+                for team in self.teams:
+                    totalActions[action] += self.actions[team][action]
+
+            print("Epoch {}  cells: {}  waits: {}  moves: {}  mates: {}  attacks: {}  changeTeams: {}"
+                  .format(self.epoch, len(self.cells),
+                          totalActions['wait'],
+                          totalActions['move'],
+                          totalActions['mate'],
+                          totalActions['attack'],
+                          totalActions['changeTeam']))

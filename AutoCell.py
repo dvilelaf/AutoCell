@@ -14,7 +14,7 @@ cellHeight = np.floor(windowHeight / worldHeight)
 # Initialization
 pygame.init()
 screen = pygame.display.set_mode((windowWidth, windowHeight))
-world = World(worldWidth, worldHeight, population=startingPopulation, nTeams=nTeams)
+world = World(worldWidth, worldHeight, initialPopulation=startingPopulation, nTeams=nTeams)
 pause = False
 plot = Plot(world) if showPlot else None
 
