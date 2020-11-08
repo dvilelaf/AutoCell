@@ -22,9 +22,16 @@ class Cell:
                 self.genes[gen] = random.random() * geneticMask[self.team][gen]
                 weight += self.genes[gen]
         else:
-            for gen in self.genes:
-                self.genes[gen] = sum([p.genes[gen] for p in parents]) / len(parents)
-                weight += self.genes[gen]
+            if random.random() > cellMutationRate:
+                for gen in self.genes:
+                    self.genes[gen] = sum([p.genes[gen] for p in parents]) / len(parents)
+                    weight += self.genes[gen]
+
+            # Mutation
+            else:
+                for gen in self.genes:
+                    self.genes[gen] = random.random()
+                    weight += self.genes[gen]
 
         # Gen normalization
         for gen in self.genes:

@@ -10,6 +10,7 @@ cellMaxAge = 10                   # Cells die at 10 epochs
 cellMaxLifePoints = 100           # Cells have a maximum of 100 life points
 cellMinStartingLifeFactor = 0.75  # A cell is randomly initialized with between 75 and 100 life points
 cellMatingFactor = 0.25           # A cell loses 25% of its life points when mating
+cellMutationRate = 0.1            # A newborn cell mutates all its genes with a probability of 10%
 
 # Genetic mask: relative weight of every gen (inclination towards an action)
 geneticMask = {'blue':   {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1},
