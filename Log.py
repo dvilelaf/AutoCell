@@ -28,7 +28,6 @@ class Plot:
     def update(self, world):
 
         self.x.append(world.epoch)
-        self.axes.set_xlim([0, world.epoch])
 
         for action in self.data['performedActions']:
             self.data['performedActions'][action].append(world.performedActions[action])
@@ -62,6 +61,7 @@ class Plot:
             plt.show()
 
         else:
+            self.axes[0].set_xlim([0, world.epoch])
 
             for team in world.teams:
                 if self.axes.get_ylim()[1] < self.data['teams'][team]['population'][-1]:
