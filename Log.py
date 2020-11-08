@@ -72,8 +72,9 @@ class Plot:
 
         for team in world.teams:
             for gen in self.genes:
-                self.data[team]['genes'][gen][-1] /= world.populations[team] # Average genes
-                self.data[team]['actions'][gen].append(world.actions[team][gen] / world.populations[team]) # Actions (averaged)
+                if world.populations[team] > 0:
+                    self.data[team]['genes'][gen][-1] /= world.populations[team] # Average genes
+                    self.data[team]['actions'][gen].append(world.actions[team][gen] / world.populations[team])
 
         # Plot initialization
         if not self.plotInitialized:
