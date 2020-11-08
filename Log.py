@@ -70,4 +70,4 @@ class Plot:
                 self.populationPlots[team].set_xdata(self.x)
                 self.populationPlots[team].set_ydata(self.data['teams'][team]['population'])
 
-            plt.pause(0.001)
+            self.figure.canvas.start_event_loop(0.001) # plt.pause(0.001) steals the focus
