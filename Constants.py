@@ -1,5 +1,5 @@
 # Number of teams (max 5)
-nTeams = 2
+nTeams = 3
 
 # World size (in cells)
 worldWidth, worldHeight = 160, 90
