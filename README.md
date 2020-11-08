@@ -3,9 +3,13 @@
 Autocell is a cellular automaton written in Python. It uses pygame to show the system
 evolution.
 
-You can change the system parameters at *Constants.py*.
+![Imgur](https://i.imgur.com/gunkW9W.png)
+
+![Imgur](https://i.imgur.com/9vycWbS.png)
 
 ## System rules
+
+You can change the system parameters at *Constants.py*.
 
 * The system is a *spherical* world, like in Pacman game: there are no limits. If a cell moves up the upper window end, it appears on the lower end. Also from left to right.
 * There are 1 to 5 color-based teams.
