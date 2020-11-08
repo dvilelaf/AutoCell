@@ -26,8 +26,8 @@ neighbourLimit = 3  # 8 for no resource competition
 windowWidth, windowHeight = 1600, 900 # Window pixel size
 gridOn = False                        # Show grid
 frameWait = 0.1                       # Time to wait between frames
-logData = True
-showPlot = True
+logData = True                        # Print data for every step
+showPlot = True                       # Show plots (slower)
 
 # Colors
 colors = {'blue':      (102, 194, 255),
