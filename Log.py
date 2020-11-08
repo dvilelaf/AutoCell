@@ -45,7 +45,7 @@ class Plot:
         maxPopulationGuess = 1.5 * (world.width * world.height) * (neighbourLimit / 8) / nTeams
 
         self.axes['population'].set_ylim([0, maxPopulationGuess])
-        self.axes['population'].set_ylabel('Population')
+        self.axes['population'].set_title('Population')
 
         for gen in self.axes['genes']:
             self.axes['genes'][gen].set_ylim([0, 1])
@@ -53,6 +53,9 @@ class Plot:
 
             self.axes['actions'][gen].set_ylim([0, 1])
             self.axes['actions'][gen].set_ylabel(gen)
+
+        self.axes['genes']['wait'].set_title('Gen average')
+        self.axes['actions']['wait'].set_title('Action average')
 
 
     def update(self, world):
