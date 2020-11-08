@@ -5,6 +5,7 @@ import numpy as np
 from World import World, colors
 from Cell import Cell
 from Constants import *
+from Log import Plot
 
 # Cell size
 cellWidth = np.floor(windowWidth / worldWidth)
@@ -15,6 +16,7 @@ pygame.init()
 screen = pygame.display.set_mode((windowWidth, windowHeight))
 world = World(worldWidth, worldHeight, population=startingPopulation, nTeams=nTeams)
 pause = False
+plot = Plot(world) if showPlot else None
 
 # Loop
 while True:
@@ -44,6 +46,10 @@ while True:
             screen.blit(surface, (cell.col * cellWidth, cell.row * cellHeight))
 
         pygame.display.flip()
+
+        # Plot
+        if showPlot:
+            plot.update(world)
 
         # Exit when no alive cells remain
         if len(world.cells) == 0:

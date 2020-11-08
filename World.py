@@ -128,12 +128,13 @@ class World:
             self.cells[i] = None # Keep map synced
             del self.cells[i]
 
-        print("Epoch {}  cells: {}  waits: {}  moves: {}  mates: {}  attacks: {}  changeTeams: {}"
-              .format(self.epoch, len(self.cells),
-                      self.performedActions['wait'],
-                      self.performedActions['move'],
-                      self.performedActions['mate'],
-                      self.performedActions['attack'],
-                      self.performedActions['changeTeam']))
+        if logData:
+            print("Epoch {}  cells: {}  waits: {}  moves: {}  mates: {}  attacks: {}  changeTeams: {}"
+                .format(self.epoch, len(self.cells),
+                        self.performedActions['wait'],
+                        self.performedActions['move'],
+                        self.performedActions['mate'],
+                        self.performedActions['attack'],
+                        self.performedActions['changeTeam']))
 
         self.epoch += 1
