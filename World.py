@@ -64,8 +64,6 @@ class World:
         # Ensure random decision order
         random.shuffle(cellIndexList)
 
-        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0} for team in self.teams}
-
         for cellIndex in cellIndexList:
             cell = self.cells[cellIndex]
 
@@ -144,6 +142,7 @@ class World:
         self.epoch += 1
 
         # Count actions of living cells
+        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0} for team in self.teams}
         totalActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0}
 
         for cell in self.cells:
