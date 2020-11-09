@@ -20,6 +20,7 @@ class World:
                 break
 
         self.populations = {team: 0 for team in self.teams}
+        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0} for team in self.teams}
 
         while len(self.cells) < self.initialPopulation:
             row = random.randint(0, self.height - 1)
@@ -43,24 +44,39 @@ class World:
         return self.get(row, col) == None
 
 
+    def spawn(self, row, col, parents):
+        team = parents[0].team
+        self.cells.append(Cell(team, row, col, parents=parents))
+        self.set(row, col, self.cells[-1]) # Keep map synced
+        self.populations[team] += 1
+
+
+    def kill(self, index):
+        cell = self.cells[index]
+        self.populations[cell.team] -= 1
+        self.set(cell.row, cell.col, None) # Keep map synced
+        del self.cells[index]
+
+
     def step(self):
         # Use an independent list to avoid modifying inside a loop
         cellIndexList = list(range(len(self.cells)))
         # Ensure random decision order
         random.shuffle(cellIndexList)
 
-        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0} for team in self.teams}
+        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0} for team in self.teams}
 
         for cellIndex in cellIndexList:
             cell = self.cells[cellIndex]
 
-            if cell.isAlive():
+            if cell.isAlive(): # Some cells may have been killed by a neighbour
 
                 emptyNeighbours = 0
                 friendNeighbours = 0
                 foeNeighbours = 0
                 environment = []
 
+                # Environment
                 for rowDelta in [-1, 0, 1]:
                     for colDelta in [-1, 0, 1]:
                         if (rowDelta == 0 and colDelta == 0): # Skip self position
@@ -78,10 +94,12 @@ class World:
                                     foeNeighbours += 1
                                     environment.append('foe')
 
+                # Death by overpopulation
                 if (friendNeighbours + foeNeighbours) > neighbourLimit:
                     cell.lifePoints = 0
                     continue
 
+                # Action selection
                 action, targetPositionDelta, spawnPositionDelta = cell.selectAction(environment)
 
                 targetPosition = ((cell.row + targetPositionDelta[0]) % self.height, (cell.col + targetPositionDelta[1]) % self.width)
@@ -91,19 +109,17 @@ class World:
 
                 self.actions[cell.team][action] += 1
 
+
                 if action == 'wait':
                     pass
 
                 elif action == 'move':
                     cell.row = targetPosition[0]
                     cell.col = targetPosition[1]
-                    cell.normalizePosition(self.width, self.height)
 
                 elif action == 'mate':
                     cell.lifePoints = int((1 - cellMatingFactor) * cell.lifePoints)
-                    self.cells.append(Cell(cell.team, spawnPosition[0], spawnPosition[1], parents=(cell, target)))
-                    self.set(spawnPosition[0], spawnPosition[1], self.cells[-1]) # Keep map synced
-                    self.populations[cell.team] += 1
+                    self.spawn(spawnPosition[0], spawnPosition[1], parents=(cell, target))
 
                 elif action == 'attack':
                     lifeDelta = min((target.lifePoints, cell.lifePoints))
@@ -111,8 +127,9 @@ class World:
                     target.lifePoints -= lifeDelta
 
                 elif action == 'changeTeam':
+                    self.populations[cell.team] -= 1
+                    self.populations[target.team] += 1
                     cell.team = target.team
-
 
         # Clean dead cells
         deletionList = []
@@ -121,23 +138,20 @@ class World:
                 deletionList.append(i)
 
         for i in sorted(deletionList, reverse=True):
-            self.populations[self.cells[i].team] -= 1
-            self.cells[i] = None # Keep map synced
-            del self.cells[i]
+            self.kill(i)
 
+        # Increase epoch
         self.epoch += 1
 
+        # Count actions of living cells
+        totalActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0}
+
+        for cell in self.cells:
+            self.actions[cell.team][cell.lastAction] += 1
+            totalActions[cell.lastAction] += 1
+
         if logData:
-
-            totalActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0}
-            for action in totalActions:
-                for team in self.teams:
-                    totalActions[action] += self.actions[team][action]
-
-            print("Epoch {}  cells: {}  waits: {}  moves: {}  mates: {}  attacks: {}  changeTeams: {}"
-                  .format(self.epoch, len(self.cells),
-                          totalActions['wait'],
-                          totalActions['move'],
-                          totalActions['mate'],
-                          totalActions['attack'],
-                          totalActions['changeTeam']))
+            print(f"Epoch {self.epoch}  cells: {len(self.cells)}  "
+                  f"waits: {totalActions['wait']}  moves: {totalActions['move']}  "
+                  f"mates: {totalActions['mate']}  attacks: {totalActions['attack']}  "
+                  f"changeTeams: {totalActions['changeTeam']}  none: {totalActions['none']}")

@@ -15,6 +15,7 @@ class Cell:
         self.genes = {'wait': 0.0, 'move': 0.0, 'mate': 0.0, 'attack': 0.0, 'changeTeam': 0.0}
         self.lifePoints = random.uniform(cellMinStartingLifeFactor * self.maxLifePoints, self.maxLifePoints)
 
+        self.lastAction = 'none'
         weight = 0.0
 
         if not parents:
@@ -40,11 +41,6 @@ class Cell:
 
     def isAlive(self):
         return self.lifePoints > 0 and self.age <= self.maxAge
-
-
-    def normalizePosition(self, worldWidth, worldHeight):
-        self.row = self.row % worldHeight
-        self.col = self.col % worldWidth
 
 
     def selectAction(self, environment):
@@ -100,4 +96,5 @@ class Cell:
         spawnPosition = random.choice(spawnPositions) if len(spawnPositions) > 0 else None
         spawnPositionDelta = (int(spawnPosition / 3) - 1, spawnPosition % 3 - 1) if spawnPosition != None else None
 
+        self.lastAction = action
         return action, targetPositionDelta, spawnPositionDelta
