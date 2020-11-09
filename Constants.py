@@ -22,7 +22,7 @@ geneticMask = {'blue':   {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeT
                'white':  {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1}}
 
 # Resources
-neighbourLimit = 3  # 8 for no resource competition
+neighbourLimit = 5  # 8 for no resource competition
 
 # Window
 windowWidth, windowHeight = 1600, 900 # Window pixel size
