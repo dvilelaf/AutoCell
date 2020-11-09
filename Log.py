@@ -78,8 +78,6 @@ class Plot:
                 if world.populations[team] > 0:
                     self.data[team]['genes'][gen][-1] /= world.populations[team] # Average genes
                     self.data[team]['actions'][gen].append(world.actions[team][gen] / world.populations[team])
-                    if self.data[team]['actions'][gen][-1] > 1:
-                        print()
                 else:
                     self.data[team]['actions'][gen].append(0)
 
