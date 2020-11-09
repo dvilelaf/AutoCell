@@ -107,7 +107,6 @@ class World:
 
                 self.actions[cell.team][action] += 1
 
-
                 if action == 'wait':
                     pass
 
