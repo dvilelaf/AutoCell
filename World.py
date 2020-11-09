@@ -151,7 +151,7 @@ class World:
             totalActions[cell.lastAction] += 1
 
         if logData:
-            print(f"Epoch {self.epoch}  cells: {len(self.cells)}  "
-                  f"waits: {totalActions['wait']}  moves: {totalActions['move']}  "
-                  f"mates: {totalActions['mate']}  attacks: {totalActions['attack']}  "
-                  f"changeTeams: {totalActions['changeTeam']}  none: {totalActions['none']}")
+            print(f"Epoch {self.epoch:>5}    cells: {len(self.cells):>5}    "
+                  f"waits: {totalActions['wait']:>5}    moves: {totalActions['move']:>5}    "
+                  f"mates: {totalActions['mate']:>5}  attacks: {totalActions['attack']:>5}    "
+                  f"changeTeams: {totalActions['changeTeam']:>4}    none: {totalActions['none']:>5}")
