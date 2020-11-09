@@ -116,7 +116,7 @@ class World:
                     cell.col = targetPosition[1]
 
                 elif action == 'mate':
-                    cell.lifePoints = int((1 - cellMatingFactor) * cell.lifePoints)
+                    cell.lifePoints -= cellMatingFactor
                     self.spawn(spawnPosition[0], spawnPosition[1], parents=(cell, target))
 
                 elif action == 'attack':
