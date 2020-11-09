@@ -6,8 +6,10 @@ worldWidth, worldHeight = 160, 90
 
 # Cell parameters
 startingPopulation = 500          # World is initialized with 100 cells
-cellMaxAge = 10                   # Cells die at 10 epochs
-cellMaxLifePoints = 100           # Cells have a maximum of 100 life points
+cellMaxAge = 10                   # Cells die at ~10 epochs
+cellMaxAgeVariance = 0.2          # Cell max age can be +-20%
+cellMaxLifePoints = 100           # Cells have a maximum of ~100 life points
+cellMaxLifePointsVariance = 0.2   # Cells max life points can be +-20%
 cellMinStartingLifeFactor = 0.75  # A cell is randomly initialized with between 75 and 100 life points
 cellMatingFactor = 25             # A cell loses 25 of its life points when mating
 cellMutationRate = 0.1            # A newborn cell mutates all its genes with a probability of 10%

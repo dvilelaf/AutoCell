@@ -4,17 +4,15 @@ from Constants import *
 
 class Cell:
 
-    maxAge = cellMaxAge
-    maxLifePoints = cellMaxLifePoints
-
     def __init__(self, team, row, col, parents=None):
         self.team = team
         self.row = row
         self.col = col
         self.age = 0
         self.genes = {'wait': 0.0, 'move': 0.0, 'mate': 0.0, 'attack': 0.0, 'changeTeam': 0.0}
+        self.maxAge = random.randint(int((1 - cellMaxAgeVariance) * cellMaxAge), int((1 + cellMaxAgeVariance) * cellMaxAge))
+        self.maxLifePoints = random.randint(int((1 - cellMaxLifePointsVariance) * cellMaxLifePoints), int((1 + cellMaxLifePointsVariance) * cellMaxLifePoints))
         self.lifePoints = random.uniform(cellMinStartingLifeFactor * self.maxLifePoints, self.maxLifePoints)
-
         self.lastAction = 'none'
         weight = 0.0
 
