@@ -26,10 +26,10 @@ video = SimVideoWriter() if writeVideo else None
 # Loop
 while True:
 
-    # Screen update
     if not pause:
         world.step()
 
+        # Screen update
         if showWindow:
             screen.fill(backgroundColor)
 
@@ -63,11 +63,12 @@ while True:
 
         # Exit when no alive cells remain
         if len(world.cells) == 0:
+            video.end()
             pygame.quit()
             sys.exit()
 
-    # Keyboard event check
     if showWindow:
+        # Keyboard event check
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 video.end()
@@ -76,5 +77,5 @@ while True:
             elif event.type == pygame.KEYDOWN:
                 pause = not pause
 
-    # Sleep
-    time.sleep(frameWait)
+        # Sleep
+        time.sleep(frameWait)
