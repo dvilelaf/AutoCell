@@ -3,7 +3,7 @@
 Autocell is a cellular automaton written in Python. It uses pygame to show the system
 evolution, plots population evolution and writes the simulation's video using openCV.
 
-![hippo](https://media.giphy.com/media/3dcnERqUpfciPeehK4/giphy.gif)
+<img src="https://media.giphy.com/media/3dcnERqUpfciPeehK4/giphy.gif"/>
 
 ![Imgur](https://i.imgur.com/9vycWbS.png)
 
