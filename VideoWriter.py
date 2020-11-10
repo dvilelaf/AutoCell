@@ -2,11 +2,23 @@ import cv2
 from cv2 import VideoWriter, VideoWriter_fourcc
 import numpy as np
 from Constants import *
+import os.path
 
 
 class SimVideoWriter:
 
-    def __init__(self, path='./simulation.mkv', width=videoWidth, height=videoHeight, fps=videoFPS):
+    def __init__(self, path=videoPath, width=videoWidth, height=videoHeight, fps=videoFPS):
+
+        if os.path.isfile(path):
+            # pathData = path.split('.')
+            # filename = pathData[:-1].join('.')
+            # extension = pathData[-1]
+            filename, extension = os.path.splitext(path)
+            i = 0
+            while os.path.isfile(path):
+                path = filename + str(i) + extension
+                i += 1
+
         self.width = width
         self.height = height
         self.video = VideoWriter(path, VideoWriter_fourcc(*'avc1'), # *'HFYU' for lossless
