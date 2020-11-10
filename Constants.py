@@ -30,18 +30,18 @@ neighbourLimit = 8  # 8 for no resource competition
 logData = True                          # Print data for every step
 
 # Window
-showWindow = False                      # Show the simulation window
+showWindow = True                       # Show the simulation window
 windowWidth, windowHeight = 1920, 1080  # Window pixel size
 gridOn = False                          # Show grid
 frameWait = 0.1                         # Time to wait between frames
 
 # Plot
-showPlot = False                        # Show plots (slower)
+showPlot = True                         # Show plots (slower)
 
 # Video
 writeVideo = True                       # Save sim to video
 videoWidth, videoHeight = 1920, 1080    # Video pixel size
-videoFPS = 30                           # Frames per second
+videoFPS = 20                           # Frames per second
 videoPath = './simulation.mkv'          # Video path
 
 # Colors
