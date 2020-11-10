@@ -6,6 +6,7 @@ from World import World, colors
 from Cell import Cell
 from Constants import *
 from Log import Plot
+from VideoWriter import SimVideoWriter
 
 # Cell size
 cellWidth = np.floor(windowWidth / worldWidth)
@@ -17,6 +18,7 @@ screen = pygame.display.set_mode((windowWidth, windowHeight))
 world = World(worldWidth, worldHeight, initialPopulation=startingPopulation, nTeams=nTeams)
 pause = False
 plot = Plot(world) if showPlot else None
+video = SimVideoWriter() if writeVideo else None
 
 # Loop
 while True:
@@ -45,7 +47,10 @@ while True:
 
             screen.blit(surface, (cell.col * cellWidth, cell.row * cellHeight))
 
+        # Write video
         pygame.display.flip()
+        if writeVideo:
+            video.writeFrame(world)
 
         # Plot
         if showPlot:
@@ -59,6 +64,7 @@ while True:
     # Keyboard event check
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            video.end()
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
