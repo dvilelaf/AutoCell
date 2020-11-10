@@ -39,7 +39,7 @@ class SimVideoWriter:
             for i in range(3):
                 cellArea[:,:,i] = cellColor[i]
 
-            blend = cv2.addWeighted(cellBackground, (1 - alpha), cellArea, alpha, 1.0)
+            blend = cv2.addWeighted(cellBackground, (1 - alpha), cellArea, alpha, 0)
             frame[pt1[1] : pt2[1], pt1[0] : pt2[0]] = blend
 
         self.video.write(frame)
