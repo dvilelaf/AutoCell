@@ -1,7 +1,7 @@
 # AutoCell
 
 Autocell is a cellular automaton written in Python. It uses pygame to show the system
-evolution.
+evolution, plots population evolution and writes the simulation's video using openCV.
 
 ![Imgur](https://i.imgur.com/gunkW9W.png)
 
@@ -55,6 +55,6 @@ You can change the system parameters at *Constants.py*.
 
 
 
-## Plotting
+## Plots and videos
 
-The plot can be deactivated, as it makes simulation slower.
+Plotting and video writting can be deactivated, as they make the simulation slower.
