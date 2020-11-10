@@ -25,20 +25,21 @@ class SimVideoWriter:
 
         for cell in world.cells:
 
+            cellColor = tuple(reversed(colors[cell.team])) # BGR
             ageFactor = (cell.maxAge - cell.age) / cell.maxAge         # 1 -> young,   0 -> old
             lifePointsFactor = cell.lifePoints / cell.maxLifePoints    # 1 -> healthy, 0 -> damaged
-            alpha = int(255.0 * (ageFactor + lifePointsFactor) / 2.0)
-            color = tuple(reversed(colors[cell.team]))  # BGR
+            alpha = (ageFactor + lifePointsFactor) / 2.0
 
             pt1 = (int(cell.col * self.cellWidth), int(cell.row * self.cellHeight))
             pt2 = (int((cell.col + 1) * self.cellWidth), int((cell.row + 1) * self.cellHeight))
 
-            rect = cv2.Mat()
-            frame.copyTo(rect)
-            cv2.rectangle(rect, pt1=pt1, pt2=pt2, color=color, thickness=-1)
-            cv2.addWeighted(rect, alpha, frame, 1 - alpha, 0, frame)
+            cellBackground = frame[pt1[1] : pt2[1], pt1[0] : pt2[0]] # Beware, X and Y must be reversed here
 
-            # white_rect = np.ones(sub_img.shape, dtype=np.uint8) * 255
-            # res = cv2.addWeighted(sub_img, 0.5, white_rect, 0.5, 1.0)
+            cellArea = np.ones(cellBackground.shape, dtype=np.uint8)
+            for i in range(3):
+                cellArea[:,:,i] = cellColor[i]
+
+            blend = cv2.addWeighted(cellBackground, (1 - alpha), cellArea, alpha, 1.0)
+            frame[pt1[1] : pt2[1], pt1[0] : pt2[0]] = blend
 
         self.video.write(frame)
