@@ -9,7 +9,7 @@ class SimVideoWriter:
     def __init__(self, path='./simulation.mkv', width=1920, height=1080, fps=10):
         self.width = width
         self.height = height
-        self.video = VideoWriter(path, VideoWriter_fourcc(*'avc1'),
+        self.video = VideoWriter(path, VideoWriter_fourcc(*'avc1'), # *'HFYU' for lossless
                                  float(fps), (width, height))
         self.cellWidth = np.floor(width / worldWidth)
         self.cellHeight = np.floor(height / worldHeight)
