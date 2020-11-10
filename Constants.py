@@ -22,7 +22,7 @@ geneticMask = {'blue':   {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeT
                'white':  {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1}}
 
 # Resources
-neighbourLimit = 8  # 8 for no resource competition
+neighbourLimit = 5  # 8 for no resource competition
 
 # OUTPUT --------------------------------------------------------------------------------------
 
