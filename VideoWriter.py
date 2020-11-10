@@ -6,7 +6,7 @@ from Constants import *
 
 class SimVideoWriter:
 
-    def __init__(self, path='./simulation.mkv', width=1920, height=1080, fps=10):
+    def __init__(self, path='./simulation.mkv', width=videoWidth, height=videoHeight, fps=videoFPS):
         self.width = width
         self.height = height
         self.video = VideoWriter(path, VideoWriter_fourcc(*'avc1'), # *'HFYU' for lossless

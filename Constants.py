@@ -2,7 +2,7 @@
 nTeams = 3
 
 # World size (in cells)
-worldWidth, worldHeight = 160, 90
+worldWidth, worldHeight = 320, 180
 
 # Cell parameters
 startingPopulation = 500          # World is initialized with 100 cells
@@ -22,16 +22,26 @@ geneticMask = {'blue':   {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeT
                'white':  {'wait': 1, 'move': 1, 'mate': 1, 'attack': 1, 'changeTeam': 1}}
 
 # Resources
-neighbourLimit = 5  # 8 for no resource competition
+neighbourLimit = 8  # 8 for no resource competition
+
+# OUTPUT --------------------------------------------------------------------------------------
+
+# Print data
+logData = True                          # Print data for every step
 
 # Window
-windowWidth, windowHeight = 1600, 900 # Window pixel size
-gridOn = False                        # Show grid
-frameWait = 0.1                       # Time to wait between frames
-showWindow = True                     # Show the simulation window
-logData = True                        # Print data for every step
-showPlot = False                       # Show plots (slower)
-writeVideo = True                     # Save sim to video
+showWindow = False                      # Show the simulation window
+windowWidth, windowHeight = 1920, 1080  # Window pixel size
+gridOn = False                          # Show grid
+frameWait = 0.1                         # Time to wait between frames
+
+# Plot
+showPlot = False                        # Show plots (slower)
+
+# Video
+writeVideo = True                       # Save sim to video
+videoWidth, videoHeight = 1920, 1080    # Video pixel size
+videoFPS = 30                           # Frames per second
 
 # Colors
 colors = {'blue':      (102, 194, 255),
