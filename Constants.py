@@ -42,6 +42,7 @@ showPlot = False                        # Show plots (slower)
 writeVideo = True                       # Save sim to video
 videoWidth, videoHeight = 1920, 1080    # Video pixel size
 videoFPS = 30                           # Frames per second
+videoPath = './simulation.mkv'          # Video path
 
 # Colors
 colors = {'blue':      (102, 194, 255),
