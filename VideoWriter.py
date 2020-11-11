@@ -10,9 +10,6 @@ class SimVideoWriter:
     def __init__(self, path=videoPath, width=videoWidth, height=videoHeight, fps=videoFPS):
 
         if os.path.isfile(path):
-            # pathData = path.split('.')
-            # filename = pathData[:-1].join('.')
-            # extension = pathData[-1]
             filename, extension = os.path.splitext(path)
             i = 0
             while os.path.isfile(path):
