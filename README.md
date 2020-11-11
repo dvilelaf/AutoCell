@@ -45,7 +45,7 @@ You can change the system parameters at *Constants.py*.
 
 ### Attacking
 
-* Attackingis only posible if there is a different-team neighbour.
+* Attacking is only posible if there is a different-team neighbour.
 * The more different-team neighbours are around, the higher the change to attack.
 * Attacking a cell means that both cells see their life points decreased until one of them dies.
 
