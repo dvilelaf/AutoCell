@@ -43,6 +43,7 @@ writeVideo = True                       # Save sim to video
 videoWidth, videoHeight = 1920, 1080    # Video pixel size
 videoFPS = 20                           # Frames per second
 videoPath = './simulation.mkv'          # Video path
+lossless = False                        # Use lossless encoding?
 
 # Colors
 colors = {'blue':      (102, 194, 255),

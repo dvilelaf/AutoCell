@@ -18,7 +18,8 @@ class SimVideoWriter:
 
         self.width = width
         self.height = height
-        self.video = VideoWriter(path, VideoWriter_fourcc(*'avc1'), # *'HFYU' for lossless
+        codec = 'HFYU' if lossless else 'avc1'
+        self.video = VideoWriter(path, VideoWriter_fourcc(*codec),
                                  float(fps), (width, height))
         self.cellWidth = np.floor(width / worldWidth)
         self.cellHeight = np.floor(height / worldHeight)
