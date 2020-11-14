@@ -56,7 +56,11 @@ You can change the system parameters at *Constants.py*.
 * The more different-team neighbours are around, the higher the change to change team.
 
 
-
 ## Plots and videos
 
 Plotting and video writting can be deactivated, as they make the simulation slower.
+
+
+## Virus branch
+
+The repository contains a branch called virus, where the code has been simplified and adapted to simulate a virus propagation.
