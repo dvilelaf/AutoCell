@@ -35,10 +35,12 @@ class SimVideoWriter:
 
         for cell in world.cells:
 
-            cellColor = tuple(reversed(colors[cell.team])) # BGR
-            ageFactor = (cell.maxAge - cell.age) / cell.maxAge         # 1 -> young,   0 -> old
-            lifePointsFactor = cell.lifePoints / cell.maxLifePoints    # 1 -> healthy, 0 -> damaged
-            alpha = (ageFactor + lifePointsFactor) / 2.0
+            color = colors['blue'] if cell.infected == -1 else colors['yellow']
+            if cell.passedIt:
+                color = colors['green']
+
+            cellColor = tuple(reversed(color)) # BGR
+            alpha = 1
 
             pt1 = (int(cell.col * self.cellWidth), int(cell.row * self.cellHeight))
             pt2 = (int((cell.col + 1) * self.cellWidth), int((cell.row + 1) * self.cellHeight))

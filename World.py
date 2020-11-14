@@ -11,25 +11,19 @@ class World:
         self.map = [[None for _ in range(self.width)] for _ in range(self.height)]
         self.initialPopulation = initialPopulation if initialPopulation else width
         self.cells = []
-        self.teams = []
-        self.epoch = -1
-
-        for color in colors:
-            self.teams.append(color)
-            if len(self.teams) == nTeams:
-                break
-
-        self.populations = {team: 0 for team in self.teams}
-        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0} for team in self.teams}
+        self.epoch = 0
+        self.data = {'healthy': initialPopulation - nPatientZero, 'infected': nPatientZero, 'deaths': 0, 'inmune': 0}
+        self.population = initialPopulation
 
         while len(self.cells) < self.initialPopulation:
             row = random.randint(0, self.height - 1)
             col = random.randint(0, self.width - 1)
-            team = random.choice(self.teams)
             if self.empty(row, col):
-                self.cells.append(Cell(team, row, col))
+                self.cells.append(Cell(row, col))
                 self.set(row, col, self.cells[-1]) # Map is synced with cells and shares objects
-                self.populations[team] += 1
+
+        for i in range(nPatientZero):
+            self.cells[i].infected = 0
 
 
     def get(self, row, col):
@@ -44,17 +38,9 @@ class World:
         return self.get(row, col) == None
 
 
-    def spawn(self, row, col, parents):
-        team = parents[0].team
-        self.cells.append(Cell(team, row, col, parents=parents))
-        self.set(row, col, self.cells[-1]) # Keep map synced
-        self.populations[team] += 1
-
-
     def kill(self, index):
         cell = self.cells[index]
-        self.populations[cell.team] -= 1
-        self.set(cell.row, cell.col, None) # Keep map synced
+        self.set(cell.row, cell.col, None)
         del self.cells[index]
 
 
@@ -85,27 +71,15 @@ class World:
                                 emptyNeighbours += 1
                                 environment.append('empty')
                             else:
-                                if neighbour.team == cell.team:
-                                    friendNeighbours += 1
-                                    environment.append('friend')
+                                if neighbour.isInfected():
+                                    environment.append('infected')
                                 else:
-                                    foeNeighbours += 1
-                                    environment.append('foe')
-
-                # Death by overpopulation
-                if (friendNeighbours + foeNeighbours) > neighbourLimit:
-                    cell.lifePoints = 0
-                    continue
+                                    environment.append('healthy')
 
                 # Action selection
-                action, targetPositionDelta, spawnPositionDelta = cell.selectAction(environment)
+                action, targetPositionDelta = cell.selectAction(environment, self.epoch, 100 * self.data['infected'] / startingPopulation)
 
                 targetPosition = ((cell.row + targetPositionDelta[0]) % self.height, (cell.col + targetPositionDelta[1]) % self.width)
-                target = self.get(targetPosition[0], targetPosition[1])
-
-                spawnPosition = ((cell.row + spawnPositionDelta[0]) % self.height, (cell.col + spawnPositionDelta[1]) % self.width) if spawnPositionDelta else None
-
-                self.actions[cell.team][action] += 1
 
                 if action == 'wait':
                     pass
@@ -114,19 +88,6 @@ class World:
                     cell.row = targetPosition[0]
                     cell.col = targetPosition[1]
 
-                elif action == 'mate':
-                    cell.lifePoints -= cellMatingCost
-                    self.spawn(spawnPosition[0], spawnPosition[1], parents=(cell, target))
-
-                elif action == 'attack':
-                    lifeDelta = min((target.lifePoints, cell.lifePoints))
-                    cell.lifePoints -= lifeDelta
-                    target.lifePoints -= lifeDelta
-
-                elif action == 'changeTeam':
-                    self.populations[cell.team] -= 1
-                    self.populations[target.team] += 1
-                    cell.team = target.team
 
         # Clean dead cells
         deletionList = []
@@ -140,16 +101,19 @@ class World:
         # Increase epoch
         self.epoch += 1
 
-        # Count actions of living cells
-        self.actions = {team: {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0} for team in self.teams}
-        totalActions = {'wait': 0, 'move': 0, 'mate': 0, 'attack': 0, 'changeTeam': 0, 'none': 0}
+        self.data['deaths'] = len(deletionList)
+        self.data['healthy'] = 0
+        self.data['infected'] = 0
+        self.data['inmune'] = 0
 
         for cell in self.cells:
-            self.actions[cell.team][cell.lastAction] += 1
-            totalActions[cell.lastAction] += 1
+            if cell.infected > -1:
+                self.data['infected'] += 1
+            else:
+                self.data['healthy'] += 1
+                if cell.passedIt:
+                    self.data['inmune'] += 1
 
-        if logData:
-            print(f"Epoch {self.epoch:>5}    cells: {len(self.cells):>5}    "
-                  f"waits: {totalActions['wait']:>5}    moves: {totalActions['move']:>5}    "
-                  f"mates: {totalActions['mate']:>5}  attacks: {totalActions['attack']:>5}    "
-                  f"changeTeams: {totalActions['changeTeam']:>4}    none: {totalActions['none']:>5}")
+        self.population = self.data['healthy'] + self.data['infected']
+
+        print(f"Epoch {self.epoch:>5}    cells: {len(self.cells):>5}    healthy: {self.data['healthy']:>5}    infected: {self.data['infected']:>5}    deaths: {self.data['deaths']:>5}")

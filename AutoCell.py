@@ -43,12 +43,11 @@ while True:
             # Cells
             for cell in world.cells:
                 surface = pygame.Surface((cellWidth, cellHeight))
-                surface.fill(colors[cell.team])
-
-                ageFactor = (cell.maxAge - cell.age) / cell.maxAge         # 1 -> young,   0 -> old
-                lifePointsFactor = cell.lifePoints / cell.maxLifePoints    # 1 -> healthy, 0 -> damaged
-                surface.set_alpha(int(255.0 * (ageFactor + lifePointsFactor) / 2.0))
-
+                color = colors['blue'] if cell.infected == -1 else colors['yellow']
+                if cell.passedIt:
+                    color = colors['green']
+                surface.fill(color)
+                surface.set_alpha(255)
                 screen.blit(surface, (cell.col * cellWidth, cell.row * cellHeight))
 
             pygame.display.flip()
@@ -61,17 +60,23 @@ while True:
         if showPlot:
             plot.update(world)
 
-        # Exit when no alive cells remain
-        if len(world.cells) == 0:
-            video.end()
-            pygame.quit()
-            sys.exit()
+        if world.epoch == 1:
+            pause = True
+
+        # Pause when no infected cells remain
+        # if world.data['infected'] == 0:
+        #     pause = True
+            # if writeVideo:
+            #     video.end()
+            # pygame.quit()
+            # sys.exit()
 
     if showWindow:
         # Keyboard event check
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                video.end()
+                if writeVideo:
+                    video.end()
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:

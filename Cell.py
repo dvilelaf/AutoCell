@@ -4,65 +4,47 @@ from Constants import *
 
 class Cell:
 
-    def __init__(self, team, row, col, parents=None):
-        self.team = team
+    def __init__(self, row, col):
         self.row = row
         self.col = col
-        self.age = 0
-        self.genes = {'wait': 0.0, 'move': 0.0, 'mate': 0.0, 'attack': 0.0, 'changeTeam': 0.0}
-        self.maxAge = random.randint(int((1 - cellMaxAgeVariance) * cellMaxAge), int((1 + cellMaxAgeVariance) * cellMaxAge))
-        self.maxLifePoints = random.randint(int((1 - cellMaxLifePointsVariance) * cellMaxLifePoints), int((1 + cellMaxLifePointsVariance) * cellMaxLifePoints))
-        self.lifePoints = random.uniform(cellMinStartingLifeFactor * self.maxLifePoints, self.maxLifePoints)
-        self.lastAction = 'none'
-        weight = 0.0
-
-        if not parents:
-            for gen in self.genes:
-                self.genes[gen] = random.random() * geneticMask[self.team][gen]
-                weight += self.genes[gen]
-        else:
-            if random.random() > cellMutationRate:
-                for gen in self.genes:
-                    self.genes[gen] = sum([p.genes[gen] for p in parents]) / len(parents)
-                    weight += self.genes[gen]
-
-            # Mutation
-            else:
-                for gen in self.genes:
-                    self.genes[gen] = random.random()
-                    weight += self.genes[gen]
-
-        # Gen normalization
-        for gen in self.genes:
-            self.genes[gen] /= weight
+        self.infected = -1
+        self.alive = True
+        self.passedIt = False
 
 
     def isAlive(self):
-        return self.lifePoints > 0 and self.age <= self.maxAge
+        return self.alive
 
 
-    def selectAction(self, environment):
-        self.age += 1
-        actionSet = {'wait': 1,
-                     'move': environment.count('empty'),
-                     'mate': environment.count('friend') if environment.count('empty') > 0 else 0, # Mating also needs empty space
-                     'attack': environment.count('foe'),
-                     'changeTeam': environment.count('foe')}
+    def isInfected(self):
+        return self.infected != -1
 
-        # Action normalization
-        actionWeight = 0
-        for action in actionSet:
-            actionWeight += actionSet[action]
-        for action in actionSet:
-            actionSet[action] /= actionWeight
 
-        # Combine genetic weight and environmental weight and select action
-        combinedWeights=[self.genes[action] * actionSet[action] for action in actionSet]
-        action = random.choices(list(actionSet.keys()), weights=combinedWeights, k=1)[0]
+    def selectAction(self, environment, epoch, infectedPercentage):
+
+        # Infection
+        if not self.isInfected() and not self.passedIt:
+            infectedNeighbours = environment.count('infected')
+            infProb = 1 - (1 - infectionProbability) ** infectedNeighbours
+            if random.random() < infProb:
+                self.infected = epoch
+
+        # Death
+        deathProb = deathProbability
+        if infectedPercentage > systemCapacity:
+            deathProb = deathProbability * (infectedPercentage/systemCapacity) * 10
+        if self.isInfected() and random.random() < deathProb:
+            self.alive = False
+
+        # Curation
+        if self.isInfected() and (epoch - self.infected) >= epochsToCure:
+            self.infected = -1
+            self.passedIt = True
+
+        action = random.choices(['wait', 'move'], weights=[1 - moveProb, moveProb], k=1)[0]
 
         # Select target
         targetPositions = []
-        spawnPositions = []
 
         if action == 'wait':
             targetPositions.append(4) # 4 is the center of the environment, self
@@ -74,25 +56,8 @@ class Cell:
                 if environment[i] == 'empty':
                     targetPositions.append(i)
 
-        elif action == 'mate':
-            for i in range(len(environment)):
-                if environment[i] == 'friend':
-                    targetPositions.append(i)
-
-            for i in range(len(environment)):
-                if environment[i] == 'empty':
-                    spawnPositions.append(i)
-
-        elif action in ['attack', 'changeTeam']:
-            for i in range(len(environment)):
-                if environment[i] == 'foe':
-                    targetPositions.append(i)
 
         targetPosition = random.choice(targetPositions)
         targetPositionDelta = (int(targetPosition / 3) - 1, targetPosition % 3 - 1)
 
-        spawnPosition = random.choice(spawnPositions) if len(spawnPositions) > 0 else None
-        spawnPositionDelta = (int(spawnPosition / 3) - 1, spawnPosition % 3 - 1) if spawnPosition != None else None
-
-        self.lastAction = action
-        return action, targetPositionDelta, spawnPositionDelta
+        return action, targetPositionDelta
