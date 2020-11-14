@@ -63,7 +63,8 @@ while True:
 
         # Exit when no alive cells remain
         if len(world.cells) == 0:
-            video.end()
+            if writeVideo:
+                video.end()
             pygame.quit()
             sys.exit()
 
@@ -71,7 +72,8 @@ while True:
         # Keyboard event check
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                video.end()
+                if writeVideo:
+                    video.end()
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
